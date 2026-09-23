@@ -16,22 +16,28 @@ public class QuickSort {
 
     private static void sort(int[] a, int lo, int hi, Metrics metrics) {
         while (lo < hi) {
-            metrics.enterRecursion();
-            try {
-                int[] bounds = partition3way(a, lo, hi, metrics); // {lt, gt}
-                int lt = bounds[0];
-                int gt = bounds[1];
-                int leftSize = lt - lo;
-                int rightSize = hi - gt;
-                if (leftSize < rightSize) {
+            int[] bounds = partition3way(a, lo, hi, metrics);
+            int lt = bounds[0];
+            int gt = bounds[1];
+            int leftSize = lt - lo;
+            int rightSize = hi - gt;
+
+            if (leftSize < rightSize) {
+                metrics.enterRecursion();
+                try {
                     sort(a, lo, lt - 1, metrics);
-                    lo = gt + 1;
-                } else {
-                    sort(a, gt + 1, hi, metrics);
-                    hi = lt - 1;
+                } finally {
+                    metrics.exitRecursion();
                 }
-            } finally {
-                metrics.exitRecursion();
+                lo = gt + 1;
+            } else {
+                metrics.enterRecursion();
+                try {
+                    sort(a, gt + 1, hi, metrics);
+                } finally {
+                    metrics.exitRecursion();
+                }
+                hi = lt - 1;
             }
         }
     }
@@ -56,7 +62,7 @@ public class QuickSort {
                     swap(a, i, gt);
                     gt--;
                 } else {
-                    i++; // a[i] == pivot
+                    i++;
                 }
             }
         }

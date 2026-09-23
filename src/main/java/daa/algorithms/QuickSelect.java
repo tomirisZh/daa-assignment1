@@ -3,6 +3,7 @@ package daa.algorithms;
 import daa.metrics.Metrics;
 
 public class QuickSelect {
+
     public static int select(int[] a, int k, Metrics metrics) {
         if (a == null || a.length == 0) {
             throw new IllegalArgumentException("Array must not be empty");
@@ -13,15 +14,15 @@ public class QuickSelect {
         }
 
         metrics.startTimer();
-        int result = select(a, 0, a.length - 1, k, metrics);
+        int result = selectIterative(a, 0, a.length - 1, k, metrics);
         metrics.stopTimer();
         return result;
     }
 
-    private static int select(int[] a, int lo, int hi, int k, Metrics metrics) {
-        while (true) {
-            metrics.enterRecursion();
-            try {
+    private static int selectIterative(int[] a, int lo, int hi, int k, Metrics metrics) {
+        metrics.enterRecursion();
+        try {
+            while (lo <= hi) {
                 if (lo == hi) {
                     return a[lo];
                 }
@@ -36,9 +37,10 @@ public class QuickSelect {
                 } else {
                     return a[k];
                 }
-            } finally {
-                metrics.exitRecursion();
             }
+            return a[k];
+        } finally {
+            metrics.exitRecursion();
         }
     }
 }
